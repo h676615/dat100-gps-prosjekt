@@ -8,11 +8,9 @@ public class GPSData {
 	private GPSPoint[] gpspoints;
 	protected int antall = 0;
 
-	public GPSData(int antall) {
-
-		throw new UnsupportedOperationException(TODO.method());
-		
-		// TODO
+	public GPSData(int n) {
+		antall = 0;
+		gpspoints = new GPSPoint[n];
 	}
 
 	public GPSPoint[] getGPSPoints() {
@@ -20,29 +18,52 @@ public class GPSData {
 	}
 	
 	protected boolean insertGPS(GPSPoint gpspoint) {
-
 		boolean inserted = false;
-		
-		throw new UnsupportedOperationException(TODO.method());
-		
-		// TODO 
-	
+		if(antall < gpspoints.length) {
+			gpspoints[antall] = gpspoint;
+			antall++;
+			inserted = true;
+		}
+		return inserted;
 	}
 
 	public boolean insert(String time, String latitude, String longitude, String elevation) {
 
 		GPSPoint gpspoint;
-
-		throw new UnsupportedOperationException(TODO.method());
-
-		// TODO 
+		 gpspoint = convert(time, latitude, longitude, elevation);
+		 return insertGPS(gpspoint);
 		
 	}
 
 	public void print() {
+		
+		System.out.println("====== GPS Data - START ======");
+		for(int i = 0; i < gpspoints.length; i++) {
+			System.out.print(gpspoints[i].toString());
+		}
+		System.out.println("====== GPS Data - SLUTT ======");
+	}
+	public int toSeconds(String timestr) {
+		//"2017-08-13T08:52:26.000Z"
+		int secs;
+		int hr, min, sec;
+		hr = 3600*Integer.parseInt(timestr.substring(11,13));
+		min = 60*Integer.parseInt(timestr.substring(14,16));
+		sec = Integer.parseInt(timestr.substring(17,19));
+		secs = hr+min+sec;
+		
+		return secs;
+	}
 
-		throw new UnsupportedOperationException(TODO.method());
+	public GPSPoint convert(String timeStr, String latitudeStr, String longitudeStr, String elevationStr) {
 
-		// TODO 
+		GPSPoint gpspoint;
+		double lati = Double.parseDouble(latitudeStr);
+		double longi = Double.parseDouble(longitudeStr);
+		double ele = Double.parseDouble(elevationStr);
+		int time = toSeconds(timeStr);
+		gpspoint = new GPSPoint(time, lati, longi, ele);
+		return gpspoint;
+		
 	}
 }
