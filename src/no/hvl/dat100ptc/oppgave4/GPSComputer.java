@@ -82,10 +82,8 @@ public class GPSComputer {
 	public double averageSpeed() {
 
 		double average = 0;
-		
-		// TODO
-		throw new UnsupportedOperationException(TODO.method());
-		
+		average = totalDistance()/totalTime();
+		return average;
 	}
 
 
@@ -96,29 +94,86 @@ public class GPSComputer {
 
 		double kcal;
 
-		double met = 0;		
+		double met = 0;	
+		double timer = (double)secs/3600;
 		double speedmph = speed * MS;
-
-		// TODO 
-		throw new UnsupportedOperationException(TODO.method());
 		
+		if (speedmph < 10) {
+	        met = 4.0;
+	    } else if (speedmph < 12) {
+	        met = 6.0;
+	    } else if (speedmph < 14) {
+	        met = 8.0;
+	    } else if (speedmph < 16) {
+	        met = 10.0;
+	    } else if (speedmph < 20) {
+	        met = 12.0;
+	    } else {
+	        met = 16.0;
+	    }
+		
+		kcal = met*weight*timer;
+		return kcal;
+
 	}
 
 	public double totalKcal(double weight) {
 
 		double totalkcal = 0;
-
-		// TODO 
-		throw new UnsupportedOperationException(TODO.method());
+		double[] speeds = speeds();
+		GPSPoint[] points = getGPSPoints();
 		
+		for (int i = 0; i < speeds.length; i++) {
+			int secs = points[i+1].getTime() - points[i].getTime();
+			double speed = speeds[i];
+			
+			totalkcal += kcal(weight, secs, speed);
+		}
+		
+		return totalkcal;
 	}
 	
 	private static double WEIGHT = 80.0;
 	
 	public void displayStatistics() {
+		String tid = GPSUtils.formatTime(totalTime());
+		double totalDis = GPSUtils.roundDeci(totalDistance()/1000, 2);
+		double totalEle = GPSUtils.roundDeci(totalElevation(), 2);
+		double maxSpeed = GPSUtils.roundDeci(maxSpeed()*3.6, 2);
+		double aveSpeed = GPSUtils.roundDeci(averageSpeed()*3.6, 2);
+		double energy = GPSUtils.roundDeci(totalKcal(WEIGHT), 2);
+		
+		String sep = "==============================================\n";
+		String[][] tekster = {
+				{"Total distance","km"},
+				{"Total elevation","m"},
+				{"Max speed", "km/t"},
+				{"Average speed","km/t"},
+				{"Energy","kcal"}
+		};
+		double[] verdier = {totalDis,totalEle,maxSpeed,aveSpeed,energy};
+		StringBuilder display = new StringBuilder();
+		display.append(sep);
+		display.append(String.format("%-15s", "Total Time"));
+		display.append(":");
+		display.append(String.format("%11s", tid)+"\n");
+		
+		for(int i = 0; i < verdier.length;i++) {
+			
+			String t1 = tekster[i][0];
+			String t2 = tekster[i][1];
+			String tall = String.format("%.2f", verdier[i]);
+			
+			StringBuilder svar = new StringBuilder();
+			svar.append(String.format("%-15s", t1));
+			svar.append(":");
+			svar.append(String.format("%11s", tall));
+			svar.append(" "+t2+"\n");
+			display.append(svar.toString());
+		}
+		display.append(sep);
+		System.out.print(display.toString());
 
-		// TODO 
-		throw new UnsupportedOperationException(TODO.method());
 		
 	}
 

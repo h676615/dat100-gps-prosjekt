@@ -125,8 +125,7 @@ public class GPSUtils {
 
 	public static String formatDouble(double d) {
 		
-		String str = Double.toString(roundDeci(d, 2));
-		
+		String str = String.format("%.2f", d);		
 		return String.format("%10s", str);
 		
 	}
